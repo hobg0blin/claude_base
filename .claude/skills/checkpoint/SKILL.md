@@ -14,13 +14,13 @@ Use this skill when:
 
 ## What This Skill Does
 
-1. **Update session history** (`/.claude/memory/sessions/session-history-{DATE}.md`):
+1. **Update session history** (`.claude/memory/sessions/session-history-{DATE}.md`):
    - Add a new section with timestamp
    - Document what was accomplished since last update
    - List files modified/created
    - Note any debugging steps or decision rationale worth preserving
 
-2. **Update CLAUDE.md handoff section**:
+2. **Update PROJECT.md handoff section** (or CLAUDE.md if no PROJECT.md exists):
    - Current status (what's working, what's not)
    - Running servers/processes
    - Uncommitted changes
@@ -33,7 +33,7 @@ Use this skill when:
 ## Execution Steps
 
 1. Read the current session history file to see what's already documented
-2. Read CLAUDE.md to see the current handoff state
+2. Read PROJECT.md (or CLAUDE.md) to see the current handoff state
 3. Determine what work has been done since the last update by reviewing:
    - Recent tool calls and their results
    - Files modified in this session

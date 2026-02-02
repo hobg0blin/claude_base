@@ -48,7 +48,7 @@ The goal is to avoid duplicating work while not clogging the context window. Ref
 
 **When to update each:**
 - **PROJECT.md**: Update project docs when architecture/setup changes. Keep "Current Session Handoff" section current.
-- **HISTORY.md**: Add a dated entry summarizing accomplishments at the end of each working day or major milestone.
+- **HISTORY.md**: One entry per day. Create or update the day's entry at signoff. Summarizes what was accomplished (not per-session, per-day).
 - **session-history-{DATE}.md**: Update throughout a session with detailed notes - debugging steps, decision rationale, things worth remembering. Don't wait for handoff.
 
 **Date changes:** At conversation start, check if today's date differs from the last session logged in HISTORY.md. If so:

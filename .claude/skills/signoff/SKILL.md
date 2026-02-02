@@ -12,9 +12,10 @@ Properly close out a Claude Code session by updating all memory files.
 
 ### Step 1: Gather Session Context
 
-1. Read the current session file from `/app/.claude/memory/sessions/session-history-{DATE}.md`
-2. Read `/app/CLAUDE.md` to see current handoff state
-3. Review conversation to identify what was accomplished this session
+1. Read the current session file from `.claude/memory/sessions/session-history-{DATE}.md`
+2. Read `.claude/PROJECT.md` to see current handoff state (or CLAUDE.md if no PROJECT.md exists)
+3. Read `.claude/memory/HISTORY.md` to see format and recent entries
+4. Review conversation to identify what was accomplished this session
 
 ### Step 2: Update Session History File
 
@@ -24,20 +25,32 @@ Update today's session file (`/app/.claude/memory/sessions/session-history-{DATE
 - Decisions made and rationale
 - Any incomplete work or next steps
 
-### Step 3: Update CLAUDE.md Handoff
+### Step 3: Update PROJECT.md Handoff
 
-Update the "Current Session Handoff" section with:
+Update the "Current Session Handoff" section in `.claude/PROJECT.md` with:
 - Today's date
 - Brief status summary
 - What was done this session (bullet points)
 - Any running servers or temporary state to be aware of
 - Outstanding work / next steps
 
-### Step 4: Update HISTORY.md (if significant)
+### Step 4: Update HISTORY.md
 
-If the session included significant milestones (features completed, major bugs fixed, architectural changes), add a dated entry to `/app/.claude/memory/HISTORY.md`.
+**One entry per day** - HISTORY.md should have a single dated entry for each day, updated as sessions progress. Don't create separate entries per session.
 
-Skip this for minor sessions (small fixes, exploration, documentation only).
+**Check if today's entry exists:**
+- If yes: Update it with new accomplishments from this session
+- If no: Create a new dated entry
+
+**Include significant work:**
+- Features completed or major progress
+- Bugs fixed
+- Architectural changes
+- New tools, skills, or documentation created
+
+**Skip only for truly minor sessions** (typo fixes, failed exploration, no real progress).
+
+Format: Summary sections with bullet points, status table if relevant, link to detailed session notes.
 
 ### Step 5: Report to User
 

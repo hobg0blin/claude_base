@@ -40,12 +40,14 @@ Template:
 (Session notes will be added here as work progresses)
 ```
 
-### Step 3: Update Handoff in CLAUDE.md
+### Step 3: Update Handoff in PROJECT.md
 
-Update the "Current Session Handoff" section in `/app/CLAUDE.md` with:
+Update the "Current Session Handoff" section in `.claude/PROJECT.md` with:
 - Today's date
 - Current status
 - Outstanding work items
+
+Note: If `.claude/PROJECT.md` doesn't exist, check CLAUDE.md for instructions on creating one.
 
 ### Step 4: Report to User
 

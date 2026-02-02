@@ -6,6 +6,9 @@ allowed-tools: Bash
 
 # Check Playwright MCP Connection
 
+> **Note:** The Chrome IP address (192.168.65.254) is specific to Docker Desktop on WSL.
+> Adjust for your environment if needed.
+
 Verify that Playwright MCP is set up and Chrome is available for browser testing.
 
 ## Instructions
