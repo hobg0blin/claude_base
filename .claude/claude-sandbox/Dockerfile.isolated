@@ -1,0 +1,96 @@
+# Claude Code Sandbox - Isolated Mode
+# Code is COPIED (not mounted), host files completely safe
+#
+# Customize for your project:
+# 1. Update requirements installation (line ~35)
+# 2. Update COPY commands for your project structure (line ~45)
+# 3. Adjust PYTHONPATH if needed
+
+FROM python:3.12-slim-bookworm
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+# Add/remove packages based on your project needs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ make \
+    # Uncomment if you need LDAP support:
+    # libldap2-dev libsasl2-dev \
+    # Uncomment if you need PostgreSQL:
+    # libpq-dev \
+    git curl vim sqlite3 \
+    ca-certificates gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20.x (required for Claude Code CLI)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Claude Code CLI
+RUN npm install -g @anthropic-ai/claude-code
+# Uncomment if your project needs lessc:
+# RUN npm install -g less
+
+# Create directories
+WORKDIR /app
+RUN mkdir -p /app/staging
+
+# Install Python dependencies (before COPY for better caching)
+# Option 1: From requirements file (uncomment and adjust path)
+# COPY project/requirements.txt /app/requirements.txt
+# RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Option 2: Direct pip install (uncomment and adjust)
+# RUN pip install --no-cache-dir django celery redis
+
+# ============================================================
+# COPY your project files here (key difference from mounted mode)
+# Adjust these paths for your project structure
+# ============================================================
+
+# Example: Copy entire project directory
+# COPY project/ /app/project/
+
+# Example: Copy source code
+# COPY src/ /app/src/
+
+# Copy Claude memory and config
+COPY .claude/ /app/.claude/
+COPY CLAUDE.md /app/CLAUDE.md
+
+# ============================================================
+
+# Create non-root user for Claude Code
+RUN useradd -m -s /bin/bash sandbox && \
+    chown -R sandbox:sandbox /app && \
+    mkdir -p /home/sandbox/.claude && \
+    chown -R sandbox:sandbox /home/sandbox/.claude && \
+    # Add sandbox indicator to bash prompt
+    echo 'export PS1="[SANDBOX] \w \$ "' >> /home/sandbox/.bashrc && \
+    echo 'echo ""' >> /home/sandbox/.bashrc && \
+    echo 'echo "╔══════════════════════════════════════════════════════════════╗"' >> /home/sandbox/.bashrc && \
+    echo 'echo "║  ISOLATED SANDBOX - Your host files are SAFE                 ║"' >> /home/sandbox/.bashrc && \
+    echo 'echo "║  Run: claude --dangerously-skip-permissions                  ║"' >> /home/sandbox/.bashrc && \
+    echo 'echo "╚══════════════════════════════════════════════════════════════╝"' >> /home/sandbox/.bashrc && \
+    echo 'echo ""' >> /home/sandbox/.bashrc
+
+ENV SANDBOX_MODE=isolated
+ENV SANDBOX_CONTAINER=true
+
+USER sandbox
+WORKDIR /app
+
+CMD echo "=== ISOLATED SANDBOX ===" && \
+    echo "" && \
+    echo "Your original files are SAFE - this container has a COPY." && \
+    echo "" && \
+    echo "To run Claude Code:" && \
+    echo "  claude --dangerously-skip-permissions" && \
+    echo "" && \
+    echo "When done, extract changes with:" && \
+    echo "  # From host: ./sandbox.sh extract" && \
+    echo "" && \
+    exec /bin/bash

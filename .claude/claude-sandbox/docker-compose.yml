@@ -1,0 +1,88 @@
+# Docker Compose for Claude Code Sandbox - Mounted Mode
+#
+# Usage:
+#   ./sandbox.sh start    # Build and start
+#   ./sandbox.sh enter    # Enter the sandbox shell
+#   ./sandbox.sh stop     # Stop (data preserved)
+#   ./sandbox.sh clean    # Remove container
+
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: claude-sandbox
+    stdin_open: true
+    tty: true
+    volumes:
+      # ============================================================
+      # PROJECT FILES - Customize these for your project
+      # ============================================================
+
+      # Main project source code (read-write for development)
+      # Example: Mount your project directory
+      # - ./project:/app/project:rw
+
+      # Additional source directories (read-only or read-write)
+      # - ./src:/app/src:ro
+      # - ./lib:/app/lib:ro
+
+      # ============================================================
+      # CLAUDE CONFIG - Usually keep these as-is
+      # ============================================================
+
+      # Claude memory and config
+      - ./.claude:/app/.claude:rw
+      - ./CLAUDE.md:/app/CLAUDE.md:rw
+
+    environment:
+      # ============================================================
+      # PROJECT ENVIRONMENT - Customize for your project
+      # ============================================================
+
+      # Example: Django settings
+      # - DJANGO_SETTINGS_MODULE=myproject.settings.development
+
+      # Example: Python path for your project structure
+      # - PYTHONPATH=/app/project:/app/lib
+
+      - PYTHONDONTWRITEBYTECODE=1
+      - SANDBOX_MODE=1
+
+    ports:
+      # ============================================================
+      # PORTS - Customize for your project's servers
+      # ============================================================
+
+      # Example: Django dev server
+      # - "8000:8000"
+
+      # Example: Multiple servers
+      # - "8000:8000"  # Backend
+      # - "3000:3000"  # Frontend
+
+    working_dir: /app/project
+
+  # Optional: Redis (for Celery, caching, etc.)
+  # Uncomment if your project needs Redis
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: claude-sandbox-redis
+  #   ports:
+  #     - "6379:6379"
+  #   profiles:
+  #     - with-redis  # Only starts with: docker compose --profile with-redis up
+
+  # Optional: PostgreSQL
+  # Uncomment if your project needs PostgreSQL
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: claude-sandbox-postgres
+  #   environment:
+  #     - POSTGRES_DB=sandbox
+  #     - POSTGRES_USER=sandbox
+  #     - POSTGRES_PASSWORD=sandbox
+  #   ports:
+  #     - "5432:5432"
+  #   profiles:
+  #     - with-postgres

@@ -1,0 +1,44 @@
+# Docker Compose for Claude Code Sandbox - Isolated Mode
+#
+# In isolated mode, code is COPIED into the container (not mounted).
+# Your host files are completely safe from any operations inside.
+#
+# Usage:
+#   ./sandbox.sh start-secure   # Build with code copied
+#   ./sandbox.sh enter-secure   # Enter the sandbox
+#   ./sandbox.sh extract        # Copy changes to sandbox_staging/
+#   ./sandbox.sh apply          # Apply changes to host
+
+services:
+  sandbox-isolated:
+    build:
+      context: .
+      dockerfile: Dockerfile.isolated
+    container_name: claude-sandbox-isolated
+    stdin_open: true
+    tty: true
+    # No volumes mounted - code is COPIED during build
+
+    environment:
+      # ============================================================
+      # PROJECT ENVIRONMENT - Customize for your project
+      # ============================================================
+
+      # Example: Django settings
+      # - DJANGO_SETTINGS_MODULE=myproject.settings.development
+
+      # Example: Python path
+      # - PYTHONPATH=/app/project:/app/lib
+
+      - PYTHONDONTWRITEBYTECODE=1
+      - SANDBOX_MODE=isolated
+
+    ports:
+      # ============================================================
+      # PORTS - Customize for your project's servers
+      # ============================================================
+
+      # Example: Django dev server
+      # - "8000:8000"
+
+    working_dir: /app/project
